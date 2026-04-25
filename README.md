@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# Тестовое задание — Многошаговая форма
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SPA с тремя последовательными формами для сбора данных пользователя с валидацией и финальным модальным окном подтверждения.
 
-Currently, two official plugins are available:
+## Стек
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + TypeScript
+- Vite
+- React Router v7
+- React Hook Form + Zod (валидация)
+- react-imask (маска телефона)
+- Bootstrap 5
 
-## React Compiler
+## Обоснование выбора библиотек
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Библиотека | Причина |
+| --- | --- |
+| **React Hook Form** | Управление состоянием форм без лишних ре-рендеров. Удобная интеграция с Zod через `@hookform/resolvers` |
+| **Zod** | Типобезопасная схемная валидация. Схема одновременно служит и валидатором, и источником TypeScript-типов — не нужно описывать типы отдельно |
+| **react-imask** | Готовая маска ввода для телефона. Легко интегрируется с react-hook-form через `Controller` |
+| **Bootstrap 5** | Быстрая стилизация без написания кастомного CSS. Все нужные компоненты (формы, модалка, кнопки) доступны из коробки |
+| **React Router v7** | Маршрутизация между шагами формы. Route Loaders позволяют загрузить данные (категории) до рендера компонента — не нужен `useEffect` и состояние загрузки |
 
-## Expanding the ESLint configuration
+## Запуск проекта
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Приложение откроется по адресу [http://localhost:5173](http://localhost:5173).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Сборка
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm build
+pnpm preview
 ```
+
+## Проверка работоспособности
+
+1. **Шаг 1 — Личные данные**
+   - Заполните телефон по маске `0XXX XXX XXX`, имя, фамилию и выберите пол
+   - При попытке перейти без заполнения полей отображаются ошибки валидации
+   - Нажмите «Далее»
+
+2. **Шаг 2 — Адрес и место работы**
+   - Список «Место работы» загружается из внешнего API (dummyjson.com) и кешируется
+   - Заполните адрес проживания
+   - Кнопка «Назад» возвращает на шаг 1, сохраняя введённые данные
+   - Нажмите «Далее»
+
+3. **Шаг 3 — Параметры займа**
+   - Выберите сумму ($200–$1000) и срок (10–30 дней) с помощью ползунков
+   - Нажмите «Подать заявку» — отправляется POST-запрос на тестовый API
+   - После ответа сервера появляется модальное окно с текстом:
+     > Поздравляем, Фамилия Имя. Вам одобрена $сумма на N дней.
+
+## Структура проекта
+
+```
+src/
+├── components/       # Переиспользуемые компоненты (ConfirmModal)
+├── config/           # Константы (API_URLS)
+├── context/          # FormContext — глобальное состояние форм
+├── loaders/          # Route loaders (загрузка категорий)
+├── pages/            # Step1, Step2, Step3
+└── schemas/          # Zod-схемы и типы для каждого шага
+```
+
+## Затраченное время
+
+~3 часа
