@@ -3,15 +3,19 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IMaskInput } from 'react-imask';
 import { step1Schema, type Step1FormData } from '../schemas/step1Schema';
+import { useFormContext } from '../context/useFormContext';
 
 export default function Step1() {
   const navigate = useNavigate();
+  const { formData, setStep1 } = useFormContext();
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
+    defaultValues: formData.step1,
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data: Step1FormData) => {
+    setStep1(data);
     navigate('/step2');
   };
 

@@ -2,16 +2,20 @@ import { useNavigate, useLoaderData } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step2Schema, type Step2FormData } from '../schemas/step2Schema';
+import { useFormContext } from '../context/useFormContext';
 
 export default function Step2() {
   const navigate = useNavigate();
   const categories = useLoaderData() as string[];
+  const { formData, setStep2 } = useFormContext();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<Step2FormData>({
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<Step2FormData>({
     resolver: zodResolver(step2Schema),
+    defaultValues: formData.step2,
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data: Step2FormData) => {
+    setStep2(data);
     navigate('/step3');
   };
 
@@ -45,7 +49,7 @@ export default function Step2() {
         </div>
 
         <div className="d-flex gap-2">
-          <button type="button" className="btn btn-outline-secondary w-100" onClick={() => navigate('/step1')}>
+          <button type="button" className="btn btn-outline-secondary w-100" onClick={() => { setStep2(getValues()); navigate('/step1'); }}>
             Назад
           </button>
           <button type="submit" className="btn btn-primary w-100">

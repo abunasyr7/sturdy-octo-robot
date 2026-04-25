@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { FormProvider } from './context/FormProvider';
 import Step1 from './pages/Step1';
 import Step2 from './pages/Step2';
 import { step2Loader } from './loaders/step2Loader';
@@ -12,5 +13,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <FormProvider>
+      <RouterProvider router={router} />
+    </FormProvider>
+  );
 }
