@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLoaderData } from 'react-router-dom';
 
 export default function Step2() {
   const navigate = useNavigate();
+  const categories = useLoaderData() as string[];
 
   const [workplace, setWorkplace] = useState('');
   const [address, setAddress] = useState('');
@@ -19,6 +20,9 @@ export default function Step2() {
           onChange={(e) => setWorkplace(e.target.value)}
         >
           <option value="">Выберите место работы</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
         </select>
       </div>
 
